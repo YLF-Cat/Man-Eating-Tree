@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}历史记录{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="my-4">历史题目记录</h2>
+    
+    {% for question in questions %}
+    <div class="card mb-4">
+        <div class="card-header">
+            {{ question.content|truncate(50) }}
+            <span class="float-right text-muted">
+                {{ question.created_at.strftime('%Y-%m-%d %H:%M') }}
+            </span>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                {% for option in question.options.split(',') %}
+                <div class="col-md-3 mb-3">
+                    <div class="card">
+                        <div class="card-header bg-info text-white">
+                            {{ option }} ({{ answer_stats[question.id][option]['count'] }}人)
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            {% for answer in answer_stats[question.id][option]['answers'] %}
+                            <li class="list-group-item">
+                               <td>
+    {% if answer.user %}
+        {{ answer.user.nickname }}&nbsp;{{ answer.score_change }}
+    {% else %}
+        N/A
+    {% endif %}
+</td>
+                                <small class="text-muted float-right">
+                                    {{ answer.timestamp.strftime('%H:%M:%S') }}
+                                </small>
+                            </li>
+                            {% endfor %}
+                            {% for user in missing_users[question.id] %}
+                            <li class="list-group-item text-danger">
+                                {{ user.nickname }} (未选)
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

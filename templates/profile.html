@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}个人中心{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">个人信息</div>
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-3">账号</dt>
+                    <dd class="col-sm-9">{{ current_user.username }}</dd>
+                    
+                    <dt class="col-sm-3">昵称</dt>
+                    <dd class="col-sm-9">{{ current_user.nickname }}</dd>
+
+                    <dt class="col-sm-3">密码</dt>
+                    <dd class="col-sm-9">{{ current_user.password }}</dd>
+
+                    <dt class="col-sm-3">注册密钥</dt>
+                    <dd class="col-sm-9">{{ current_user.key }}</dd>
+
+                    <dt class="col-sm-3">注册时间</dt>
+                    <dd class="col-sm-9">{{ current_user.created_at }}</dd>
+                    
+                    <dt class="col-sm-3">当前积分</dt>
+                    <dd class="col-sm-9 display-4">{{ current_user.score }}</dd>
+                </dl>
+                <a href="{{ url_for('index') }}" class="btn btn-primary">返回答题</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

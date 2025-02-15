@@ -1,0 +1,47 @@
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border-radius: 0.8rem;
+}
+
+.btn-block {
+    border-radius: 0.5rem;
+}
+
+.alert {
+    border-radius: 0.8rem;
+}
+
+.table {
+    background-color: white;
+    border-radius: 0.8rem;
+    overflow: hidden;
+}
+
+.table thead th {
+    border-bottom: 2px solid #dee2e6;
+}
+
+.options-container textarea {
+    font-family: 'Courier New', monospace;
+    font-size: 1.1em;
+}
+
+.btn-group-vertical button {
+    text-align: left;
+    padding: 1rem;
+    font-size: 1.1em;
+    transition: all 0.3s;
+}
+
+.btn-group-vertical button:hover {
+    transform: translateX(10px);
+    box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}

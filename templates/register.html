@@ -1,0 +1,27 @@
+<!-- templates/register.html -->
+{% extends "base.html" %}
+{% block title %}注册{% endblock %}
+{% block content %}
+<div class="container">
+    <h2 class="my-4">注册</h2>
+    <form method="POST" action="{{ url_for('register') }}">
+        <div class="form-group">
+            <label for="username">用户名</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">密码</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+            <label for="nickname">昵称</label>
+            <input type="text" class="form-control" id="nickname" name="nickname" required>
+        </div>
+        <div class="form-group">
+            <label for="key">密钥</label>
+            <input type="text" class="form-control" id="key" name="key" required>
+        </div>
+        <button type="submit" class="btn btn-primary">注册</button>
+    </form>
+</div>
+{% endblock %}
