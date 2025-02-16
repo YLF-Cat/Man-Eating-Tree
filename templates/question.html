@@ -39,6 +39,14 @@
             </div>
             {% else %}
             <div class="alert alert-info">当前没有活跃题目，请等待管理员发布新题</div>
+                {% if showopition %}
+                    <div class="card mb-4">
+                        <div class="card-header">历史记录</div>
+                        <div class="card-body">
+                            <a href="{{ url_for('history') }}" class="btn btn-primary">查看历史记录</a>
+                        </div>
+                    </div>
+                {% endif %}
             {% endif %}
             <!-- 积分显示 -->
             <div class="card">

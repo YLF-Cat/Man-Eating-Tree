@@ -2,10 +2,16 @@ from flask import Flask, render_template, redirect, url_for, request, flash,curr
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from flask_bootstrap import Bootstrap
+from flask_migrate import Migrate
 from datetime import datetime
 import random
 import string  
 import secrets
+import json
+import lark_oapi as lark
+from lark_oapi.api.mail.v1 import *
+
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = secrets.token_hex(16)
@@ -30,6 +36,7 @@ class User(UserMixin, db.Model):
     key = db.Column(db.String(10), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.now)
     showscore = db.Column(db.Boolean, default=True)
+    showopition = db.Column(db.Boolean, default=True)
 
 class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -84,7 +91,8 @@ def index():
     user_data = [(user.id, user.nickname, user.score) for user in users]
     ushowscore = User.query.filter_by(id=1).first()
     showscore = ushowscore.showscore
-    return render_template('question.html', question=question,users=user_data,showscore=showscore)
+    showopition = ushowscore.showopition
+    return render_template('question.html', question=question,users=user_data,showscore=showscore,showopition=showopition)
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -249,6 +257,12 @@ def admin_actions():
         User.query.update({User.score: 0.0})
         db.session.commit()
         flash('所有人的积分已清空')
+    elif action == 'clear_restart':
+        User.query.update({User.score: 0.0})
+        Question.query.delete()
+        Answer.query.delete()
+        db.session.commit()
+        flash('所有人的积分,问题,回答已清空')
     elif action == 'clear_accounts':
         User.query.filter(User.is_admin == False).delete()
         Answer.query.delete()
@@ -258,6 +272,11 @@ def admin_actions():
         Key.query.delete()
         db.session.commit()
         flash('所有密钥已清空')
+    elif action == 'clear_questions':
+        Question.query.delete()
+        Answer.query.delete()
+        db.session.commit()
+        flash('所有问题已清空')
     elif action == 'delete_account':
         user_id = int(request.form.get('delete_account_id', 0))
         user = User.query.get(user_id)
@@ -272,6 +291,10 @@ def admin_actions():
         flash('已修改')
         showscore = User.query.filter_by(id=1).first()
         showscore.showscore = not(showscore.showscore)
+    elif action == 'toggle_showopition':
+        flash('已修改')
+        showscore = User.query.filter_by(id=1).first()
+        showscore.showopition = not(showscore.showopition)
     db.session.commit()
     return redirect(url_for('admin_panel'))
 
@@ -310,9 +333,14 @@ def logout():
 @app.route('/history')
 @login_required
 def history():
-    if not current_user.is_admin:
+    ushowscore = User.query.filter_by(id=1).first()
+    showscore = ushowscore.showscore
+    showopition = ushowscore.showopition
+    question = Question.query.filter_by(is_active=True).first()
+    if (not current_user.is_admin) and (not showopition):
         return redirect(url_for('index'))
-    
+    if question and (not current_user.is_admin):
+        return redirect(url_for('index'))
     questions = Question.query.all()
     stats = {}
     missing = {}
@@ -348,3 +376,4 @@ if __name__ == '__main__':
         db.create_all()
         create_admin()
     app.run(host='0.0.0.0',debug=True,port='80')
+
